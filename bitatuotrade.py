@@ -4,8 +4,8 @@ import pyupbit
 import datetime
 import numpy as np
 
-access = "dNlYFPozFWnpa6gtT7OuOjLFbx7iD65qCkWVxxTg"
-secret = "nzhg0ah7Lh3XX2nKlUxBY904RBoSbpBHMrf8pGrZ"
+access = "your code"
+secret = "your code"
 lis = ["KRW-BTC", "KRW-ETH", "KRW-BCH", "KRW-AAVE","KRW-LTC","KRW-SOL","KRW-BSV","KRW-AVAX","KRW-AXS","KRW-STRK"]
 les = ["BTC","ETH","BCH","AAVE","LTC","SOL","BSV","AVAX","AXS","STRK"]
 def get_ror(k=0.5):
