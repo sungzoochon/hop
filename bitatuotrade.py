@@ -8,8 +8,8 @@ access = "your code"
 secret = "your code"
 lis = ["KRW-BTC", "KRW-ETH", "KRW-BCH", "KRW-AAVE","KRW-LTC","KRW-SOL","KRW-BSV","KRW-AVAX","KRW-AXS","KRW-STRK","KRW-BTG","KRW-ETC","KRW-ATOM","KRW-NEO","KRW-DOT","KRW-REP","KRW-LINK"]
 les = ["BTC","ETH","BCH","AAVE","LTC","SOL","BSV","AVAX","AXS","STRK","BTG","ETC","ATOM","NEO","DOT","REP","LINK"]
-def get_ror(k=0.5):
-    df = pyupbit.get_ohlcv("KRW-BTC")
+def get_ror(k=0.5,coin):
+    df = pyupbit.get_ohlcv(coin)
     df['range'] = (df['high'] - df['low']) * k
     df['target'] = df['open'] + df['range'].shift(1)
 
@@ -69,7 +69,7 @@ while True:
         m = 0
         res = 0
         for k in np.arange(0.1, 1.0, 0.1):
-          ror = get_ror(k)
+          ror = get_ror(k,coin)
           if ror > m:
               m = ror
               res = k
