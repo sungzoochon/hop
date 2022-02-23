@@ -76,11 +76,13 @@ while True:
             target_price = get_target_price(coin, res)
             current_price = get_current_price(coin)
             if target_price < current_price:
-                krw = get_balance("KRW")
-                if krw > 5000:
+              krw = get_balance("KRW")
+              if coin not in fin: 
+                 if krw > 5000:
                     upbit.buy_market_order(coin, krw*0.9995)
                     shift = 1
                     print("풀매수 드가자!!!!!")
+                    fin.append(coin)
                     buy_price = current_price
             if shift == 1:
                
@@ -90,12 +92,15 @@ while True:
                     print("하락이다 돔황차!!!!!")
                if current_price > buy_price * 1.20:
                     upbit.sell_market_order(coin, btc*0.9995)
+                
                     shift = 0
+                    
                     print("고점이다 돔황차!!!!!")
         else:
             btc = get_balance(coini)
             upbit.sell_market_order(coin, btc*0.9995)
             shift = 0
+            fin = []
             print("다들 돔황차!!!!!")
         time.sleep(1)
     except Exception as e:
