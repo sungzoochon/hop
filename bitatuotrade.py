@@ -4,12 +4,10 @@ import pyupbit
 import datetime
 import numpy as np
 
-access = "your code"
-secret = "your code"
+access = "dNlYFPozFWnpa6gtT7OuOjLFbx7iD65qCkWVxxTg"
+secret = "nzhg0ah7Lh3XX2nKlUxBY904RBoSbpBHMrf8pGrZ"
 lis = ["KRW-BTC", "KRW-ETH", "KRW-BCH", "KRW-AAVE","KRW-LTC","KRW-SOL","KRW-BSV","KRW-AVAX","KRW-AXS","KRW-STRK","KRW-BTG","KRW-ETC","KRW-ATOM","KRW-NEO","KRW-DOT","KRW-REP","KRW-LINK"]
 les = ["BTC","ETH","BCH","AAVE","LTC","SOL","BSV","AVAX","AXS","STRK","BTG","ETC","ATOM","NEO","DOT","REP","LINK"]
-
-
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
     df = pyupbit.get_ohlcv(ticker, interval="day", count=2)
@@ -46,9 +44,10 @@ upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 shift = 0
 # 자동매매 시작
+fin = []
 while True:
     try: 
-      for i in range(1,18):
+      for i in range(1,17):
         if shift == 0:
          coin = lis[i]
          coini = les[i]
