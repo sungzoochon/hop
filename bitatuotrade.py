@@ -8,18 +8,7 @@ access = "your code"
 secret = "your code"
 lis = ["KRW-BTC", "KRW-ETH", "KRW-BCH", "KRW-AAVE","KRW-LTC","KRW-SOL","KRW-BSV","KRW-AVAX","KRW-AXS","KRW-STRK","KRW-BTG","KRW-ETC","KRW-ATOM","KRW-NEO","KRW-DOT","KRW-REP","KRW-LINK"]
 les = ["BTC","ETH","BCH","AAVE","LTC","SOL","BSV","AVAX","AXS","STRK","BTG","ETC","ATOM","NEO","DOT","REP","LINK"]
-def get_ror(k=0.5,coin):
-    df = pyupbit.get_ohlcv(coin)
-    df['range'] = (df['high'] - df['low']) * k
-    df['target'] = df['open'] + df['range'].shift(1)
 
-    
-    df['ror'] = np.where(df['high'] > df['target'],
-                         df['close'] / df['target'],
-                         1)
-
-    ror = df['ror'].cumprod()[-2]
-    return ror
 
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
@@ -69,7 +58,15 @@ while True:
         m = 0
         res = 0
         for k in np.arange(0.1, 1.0, 0.1):
-          ror = get_ror(k,coin)
+          df = pyupbit.get_ohlcv(coin)
+          df['range'] = (df['high'] - df['low']) * k
+          df['target'] = df['open'] + df['range'].shift(1)
+
+        
+          df['ror'] = np.where(df['high'] > df['target'],
+          df['close'] / df['target'],
+                            1)
+          ror = df['ror'].cumprod()[-2]
           if ror > m:
               m = ror
               res = k
@@ -81,20 +78,23 @@ while True:
             if target_price < current_price:
                 krw = get_balance("KRW")
                 if krw > 5000:
-                    upbit.buy_market_order(coin, krw)
+                    upbit.buy_market_order(coin, krw*0.9995)
                     shift = 1
                     print("풀매수 드가자!!!!!")
                     buy_price = current_price
             if shift == 1:
                
                if current_price < buy_price * 0.97: 
-                    upbit.sell_market_order(coin, btc)
+                    upbit.sell_market_order(coin, btc*0.9995)
                     shift = 0
                     print("하락이다 돔황차!!!!!")
-               
+               if current_price > buy_price * 1.20:
+                    upbit.sell_market_order(coin, btc*0.9995)
+                    shift = 0
+                    print("고점이다 돔황차!!!!!")
         else:
             btc = get_balance(coini)
-            upbit.sell_market_order(coin, btc)
+            upbit.sell_market_order(coin, btc*0.9995)
             shift = 0
             print("다들 돔황차!!!!!")
         time.sleep(1)
