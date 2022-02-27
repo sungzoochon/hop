@@ -49,24 +49,9 @@ while True:
         coini = les[i]
         start_time = get_start_time(coin)
         end_time = start_time + datetime.timedelta(days=1)
-        m = 0
-        res = 0
-        for k in np.arange(0.1, 1.0, 0.1):
-          df = pyupbit.get_ohlcv(coin)
-          df['range'] = (df['high'] - df['low']) * k
-          df['target'] = df['open'] + df['range'].shift(1)
-          df['ror'] = np.where(df['high'] > df['target'],
-          df['close'] / df['target'],
-                            1)
-          ror = df['ror'].cumprod()[-2]
-          if ror > m:
-              m = ror
-              res = k
-
         if start_time < now < end_time - datetime.timedelta(seconds=10):
             if shift == 0:
-             res = round(res,1)  
-             target_price = get_target_price(coin, res)
+             target_price = get_target_price(coin,0.5)
              current_price = get_current_price(coin)
              if target_price < current_price:
               krw = get_balance("KRW")
@@ -79,17 +64,18 @@ while True:
                  buy_price = current_price
             if shift == 1:
                if current_price < buy_price * 0.97: 
-                    upbit.sell_market_order(coin, btc)
+                    upbit.sell_market_order(coin, btc*0.9995)
                     shift = 0   
                if current_price > buy_price * 1.20:
-                    upbit.sell_market_order(coin, btc)
+                    upbit.sell_market_order(coin, btc*0.9995)
                     shift = 0 
                     
         else:
             btc = get_balance(coini)
-            upbit.sell_market_order(coin, btc)
+            upbit.sell_market_order(coin, btc*0.9995)
             shift = 0
             fin = []
         time.sleep(0.3)
     except Exception as e:
         print(e)
+        
