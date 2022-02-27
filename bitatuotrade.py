@@ -1,8 +1,8 @@
-from re import I
+
 import time
 import pyupbit
 import datetime
-import numpy as np
+
 
 access = "dNlYFPozFWnpa6gtT7OuOjLFbx7iD65qCkWVxxTg"
 secret = "nzhg0ah7Lh3XX2nKlUxBY904RBoSbpBHMrf8pGrZ"
