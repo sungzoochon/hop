@@ -1,8 +1,6 @@
-
 import time
 import pyupbit
 import datetime
-
 
 access = "dNlYFPozFWnpa6gtT7OuOjLFbx7iD65qCkWVxxTg"
 secret = "nzhg0ah7Lh3XX2nKlUxBY904RBoSbpBHMrf8pGrZ"
@@ -20,17 +18,17 @@ def get_start_time(ticker):
     start_time = df.index[0]
     return start_time
 
-def   get_balance(ticker):
+def get_balance(ticker):
     """잔고 조회"""
     balances = upbit.get_balances()
     for b in balances:
         if b['currency'] == ticker:
-            if b['balance'] is not None: 
+            if b['balance'] is not None:
                 return float(b['balance'])
             else:
                 return 0
     return 0
-  
+
 def get_current_price(ticker):
     """현재가 조회"""
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
@@ -38,45 +36,48 @@ def get_current_price(ticker):
 # 로그인
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
+coin = ""
+coini = ""
 shift = 0
+buylist = []
 # 자동매매 시작
-fin = []
 while True:
-    try: 
-     for i in range(1,len(les)):
-        now = datetime.datetime.now()
-        if shift == 0:
-         coin = lis[i]
-         coini = les[i]
-         start_time = get_start_time(coin)
-         end_time = start_time + datetime.timedelta(days=1)
-        if start_time < now < end_time - datetime.timedelta(seconds=10):
+    try:
+     for i in range(1,len(les)):    
+         now = datetime.datetime.now()
+         if shift == 0:
+          coin = lis[i]
+          coini = les[i]
+          start_time = get_start_time(coin)
+          end_time = start_time + datetime.timedelta(days=1)
+         if start_time < now < end_time - datetime.timedelta(seconds=10):
+            target_price = get_target_price(coin, 0.5)
+            current_price = get_current_price(coin)
             if shift == 0:
-             target_price = get_target_price(coin,0.5)
-             current_price = get_current_price(coin)
              if target_price < current_price:
-              krw = get_balance("KRW")
-              if coin not in fin: 
+                krw = get_balance("KRW")
                 if krw > 5000:
-                 upbit.buy_market_order(coin, krw*0.9995)
-                 shift = 1
-                 print("풀매수 드가자!!!!!")
-                 fin.append(coin)
-                 buy_price = current_price
+                    upbit.buy_market_order(coin, krw*0.9995)
+                    shift = 1
+                    buylist.append(coin)
+                    buy_price = current_price
+                    print("buybuybuybuy")
             if shift == 1:
-               if current_price < buy_price * 0.97: 
-                    upbit.sell_market_order(coin, btc)
-                    shift = 0   
-               if current_price > buy_price * 1.20:
-                    upbit.sell_market_order(coin, btc)
-                    shift = 0 
-        else:
+             if buy_price*0.97 > current_price:
+                btc = get_balance(coini)
+                upbit.sell_market_order(coin, btc*0.9995)
+                shift = 0
+             if buy_price*1.25 < current_price:
+                btc = get_balance(coini)
+                upbit.sell_market_order(coin, btc*0.9995)
+                shift = 0
+         else:
             btc = get_balance(coini)
-            upbit.sell_market_order(coin, btc)
-            shift = 0
-            fin = []
-        time.sleep(0.3)
+            if btc > 0.00008:
+                upbit.sell_market_order(coin, btc*0.9995)
+                shift = 0
+                print("sellsellsellsell")
+         time.sleep(0.5)
     except Exception as e:
         print(e)
-        time.sleep(0.3)
-        
+        time.sleep(1)
