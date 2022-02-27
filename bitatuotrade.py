@@ -45,10 +45,11 @@ while True:
     try: 
      for i in range(1,len(les)):
         now = datetime.datetime.now()
-        coin = lis[i]
-        coini = les[i]
-        start_time = get_start_time(coin)
-        end_time = start_time + datetime.timedelta(days=1)
+        if shift == 0:
+         coin = lis[i]
+         coini = les[i]
+         start_time = get_start_time(coin)
+         end_time = start_time + datetime.timedelta(days=1)
         if start_time < now < end_time - datetime.timedelta(seconds=10):
             if shift == 0:
              target_price = get_target_price(coin,0.5)
@@ -64,18 +65,18 @@ while True:
                  buy_price = current_price
             if shift == 1:
                if current_price < buy_price * 0.97: 
-                    upbit.sell_market_order(coin, btc*0.9995)
+                    upbit.sell_market_order(coin, btc)
                     shift = 0   
                if current_price > buy_price * 1.20:
-                    upbit.sell_market_order(coin, btc*0.9995)
+                    upbit.sell_market_order(coin, btc)
                     shift = 0 
-                    
         else:
             btc = get_balance(coini)
-            upbit.sell_market_order(coin, btc*0.9995)
+            upbit.sell_market_order(coin, btc)
             shift = 0
             fin = []
         time.sleep(0.3)
     except Exception as e:
         print(e)
+        time.sleep(0.3)
         
