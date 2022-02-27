@@ -44,15 +44,14 @@ fin = []
 while True:
     try: 
      for i in range(1,len(les)):
-        if shift == 0: 
-         now = datetime.datetime.now()
-         coin = lis[i]
-         coini = les[i]
-         start_time = get_start_time(coin)
-         end_time = start_time + datetime.timedelta(days=1)
-         m = 0
-         res = 0
-         for k in np.arange(0.1, 1.0, 0.1):
+        now = datetime.datetime.now()
+        coin = lis[i]
+        coini = les[i]
+        start_time = get_start_time(coin)
+        end_time = start_time + datetime.timedelta(days=1)
+        m = 0
+        res = 0
+        for k in np.arange(0.1, 1.0, 0.1):
           df = pyupbit.get_ohlcv(coin)
           df['range'] = (df['high'] - df['low']) * k
           df['target'] = df['open'] + df['range'].shift(1)
@@ -75,15 +74,17 @@ while True:
                 if krw > 5000:
                  upbit.buy_market_order(coin, krw*0.9995)
                  shift = 1
+                 print("풀매수 드가자!!!!!")
                  fin.append(coin)
                  buy_price = current_price
             if shift == 1:
                if current_price < buy_price * 0.97: 
                     upbit.sell_market_order(coin, btc)
                     shift = 0   
-               if current_price > buy_price * 1.25:
+               if current_price > buy_price * 1.20:
                     upbit.sell_market_order(coin, btc)
                     shift = 0 
+                    
         else:
             btc = get_balance(coini)
             upbit.sell_market_order(coin, btc)
@@ -92,4 +93,3 @@ while True:
         time.sleep(0.3)
     except Exception as e:
         print(e)
-        
