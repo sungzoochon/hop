@@ -81,7 +81,7 @@ while True:
                if current_price < buy_price * 0.97: 
                     upbit.sell_market_order(coin, btc)
                     shift = 0   
-               if current_price > buy_price * 1.20:
+               if current_price > buy_price * 1.25:
                     upbit.sell_market_order(coin, btc)
                     shift = 0 
         else:
