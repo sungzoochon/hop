@@ -4,8 +4,6 @@ import datetime
 import numpy as np
 access = "dNlYFPozFWnpa6gtT7OuOjLFbx7iD65qCkWVxxTg"
 secret = "nzhg0ah7Lh3XX2nKlUxBY904RBoSbpBHMrf8pGrZ"
-les = ["BTC","ETH","BCH","AAVE","LTC","SOL","BSV","AVAX","AXS","STRK","BTG","ETC","ATOM","NEO","DOT","REP","LINK","WAVES","NEAR","QTUM","FLOW","WEMIX","GAS","SBD","OMG","TON","XTZ","SAND","KAVA","THETA","MANA","AQT","LSK","EOS","CBK","SRM","KNC"]
-
 def get_ror(k=0.5,coin = "KRW-BTC"):
   try:
     df = pyupbit.get_ohlcv(coin, count=3)
@@ -66,7 +64,16 @@ buy_list = ["FLOW",""]
 bought_list = []
 asd = 0
 i = 0
-target_list = [0 for i in range(len(les))] 
+ticker = []
+temp = pyupbit.get_tickers()
+for i in range (0,len(temp)):
+  if "KRW" in temp[i]:
+      string = temp[i]
+      string = string.replace("KRW-","")
+      if get_current_price("KRW-"+string) > 3000:
+       ticker.append(string)
+print(ticker)
+target_list = [0 for i in range(len(ticker))] 
 print("나도 부자 될꺼다") 
 while True:
  try:
@@ -77,11 +84,11 @@ while True:
   continue
 while True:
     try:
-     if i < len(les):
+     if i < len(ticker):
          time.sleep(0.1)    
          now = datetime.datetime.now()
-         coini = les[i]
-         coin = "KRW-"+les[i]
+         coini = ticker[i]
+         coin = "KRW-"+ticker[i]
          if start_time < now < end_time:
             if asd == 1:
               time.sleep(1)
@@ -125,13 +132,21 @@ while True:
          else:
              i = 0
              if asd == 0:
+              ticker = []
+              temp = pyupbit.get_tickers()
+              for i in range (0,len(temp)):
+               if "KRW" in temp[i]:
+                 string = temp[i]
+                 string = string.replace("KRW-","")
+                 if get_current_price(string) > 3000:
+                  ticker.append(string)
               for n in range(0,2):
-               btc = get_balance(buy_list[n])   
+               btc = get_balance(buy_list[n]) 
                if btc != 0:
                 upbit.sell_market_order("KRW-"+buy_list[n], btc)
                 print("KRW-"+ buy_list[n],"전량매도")
               print("다시 한번 뜨거운 승부를") 
-              target_list = [0 for i in range(len(les))]
+              target_list = [0 for i in range(len(ticker))]
               buy_list = ["",""]
               buy_price = [0,0]
               bought_list = []
