@@ -58,11 +58,11 @@ upbit = pyupbit.Upbit(access, secret)
 coini ="BTC"
 coin = "KRW-"+ coini 
 res = 0
-buy_price =[0,0]
+buy_price =[6845,0]
 ror = []
 res = 0 
-buy_list = ["",""]
-K_list = [get_K("KRW-"+les[n]) for n in range(0,len(les))]
+buy_list = ["FLOW",""]
+bought_list = []
 asd = 0
 i = 0
 KRW_record = []
@@ -87,13 +87,13 @@ while True:
             if asd == 1:
               time.sleep(1)
               asd = 0
-            if buy_list.count(0) != 0:
-             if coini not in buy_list: 
+            if buy_price.count(0) != 0 and get_balance("KRW") > 5000:
+             if coini not in buy_list and coini not in bought_list: 
               current_price = get_current_price(coin)
-              print(coin, current_price, target_list[i]) 
               if target_list[i] == 0:
-                target_list[i] = get_target_price(coin,K_list[i])
-              if target_list[i] < current_price <= target_list[i] * 1.007:             
+                target_list[i] = get_target_price(coin,0.3)
+              print(coin, current_price, target_list[i]) 
+              if target_list[i] < current_price <= target_list[i] * 1.0045:             
                 money = get_balance("KRW")/buy_price.count(0)
                 upbit.buy_market_order(coin, money * 0.9995)
                 for i in range(0,2):
@@ -103,20 +103,21 @@ while True:
                   break
                  else:
                   continue
-                print(coin,current_price,"원에 존버",money)
+                print(coin,current_price,"원에 존버")
+                bought_list.append(coini)
                 if buy_price.count(0) == 0:
                   print(buy_list[0],buy_list[1],"분할매수 완료")
                   print("제발 제발 떡상 가자 제발 부탁이다")
             for n in range(0,2):
               if buy_list[n] != "" and buy_price[n] != 0:   
                current_price = get_current_price("KRW-"+buy_list[n])
-               if buy_price[n] * 0.9 > current_price:
+               if buy_price[n] * 0.99 > current_price:
                 btc = get_balance(buy_list[n])
                 upbit.sell_market_order("KRW-"+buy_list[n], btc)
                 print(buy_list[n],"손절 돔황차!!!!")
                 buy_list[n] = ""
                 buy_price[n] = 0
-               if buy_price[n] * 1.10 < current_price:
+               if buy_price[n] * 1.034 < current_price:
                 btc = get_balance(buy_list[n])
                 upbit.sell_market_order("KRW-"+buy_list[n], btc)
                 print(buy_list[n],"익절 돔황차!!!!")
@@ -130,13 +131,13 @@ while True:
                upbit.sell_market_order("KRW-"+buy_list[n], btc)
                print("KRW-"+ buy_list[n],"전량매도")
              if asd == 0:
-              K_list = [get_K("KRW-"+les[n]) for n in range(0,len(les))]
-              print("다시 한번 뜨거운 승부를") 
+              print("다시 한번 뜨거운 승부를")
               target_list = [0 for i in range(len(les))]
               buy_list = ["",""]
               buy_price = [0,0]
               KRW_record.append(get_balance("KRW"))
               KRW_record_date.append(datetime.datetime.now)
+              bought_list = []
               asd = 1        
              while True:
               try: 
